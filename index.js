@@ -17,8 +17,8 @@ const readline = require("readline");
   await page.goto('https://supporterz.jp/recruiters/');	
 
 	console.log("page遷移中");
-	await page.type('#UserEmail', 'ikeda@fringe81.com');
-	await page.type('#UserPassword', 'supporterz1');
+	await page.type('#UserEmail', 'ID');
+	await page.type('#UserPassword', 'PASS');
 	page.click('.ui-button-primary');
 	console.log("now logining");
 
