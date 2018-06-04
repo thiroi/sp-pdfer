@@ -1,7 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
 const puppeteer = require('puppeteer');
-
+const readline = require("readline");
 
 
 (async() => {
@@ -26,29 +26,34 @@ const puppeteer = require('puppeteer');
 
 	console.log("login done");
 
-	await page.goto('https://supporterz.jp/recruiters/graduates/detail/99789');
-  await page.waitForSelector('#content');
-	await page.waitForSelector('.photo-main');
-
-	console.log("now pdf making");
-	await page.pdf({
-    path: 'supporters.pdf',
-  });
-
-	console.log("done!!");
-
-	await page.goto('https://supporterz.jp/recruiters/graduates/detail/58203');
-
-	console.log("reading a page");
-  await page.waitForSelector('#content');
-	await page.waitForSelector('.photo-main');
-
-	console.log("pdf making");
-	await page.pdf({
-    path: 'supporters2.pdf',
-  });
-
-	console.log("done!!");
+	await makePdfs(page)
+	console.log("dll one!!");
 
     browser.close();
 })();
+
+async function makePdfs(page){
+  const fileData = await fs.readFileSync('./students.txt').toString().split('\n');
+	for (data of fileData) {
+  	if(data.trim() != ""){ 
+			console.log("TARGET URL:" + data);
+			await	page.goto(data);
+			var wkname = await page.$eval('.prof-name', item => {
+   			 return item.textContent;
+			});
+			var name = wkname.replace(' プロフィール未公開','');
+			console.log("NAME:" + name);
+ 			await	page.waitForSelector('#content');
+			await	page.waitForSelector('.photo-main');
+
+			console.log("now pdf making");
+			await	page.pdf({
+				path: name + '.pdf',
+  		});
+			console.log("done!!");
+		}else{
+			console.log("skip");
+		}
+	}
+}
+
